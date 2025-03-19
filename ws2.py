@@ -6,22 +6,24 @@ from aioconsole import ainput
 async def receive_messages(websocket):
     try:
         async for message in websocket:
-            print(f"\nReceived from server: {message}")
+            print(f"\n> {message}")
     except websockets.ConnectionClosed:
         print("Connection to server closed.")
+
 
 async def send_messages(websocket):
     try:
         while True:
             # 异步获取用户输入
-            message = await ainput("Enter your message: ")
+            message = await ainput("< ")
             await websocket.send(message)
     except websockets.ConnectionClosed:
         print("Connection to server closed.")
 
+
 async def main(host):
-    url = "ws://" + host
-    async with websockets.connect(url) as websocket:
+    endpoint = "ws://" + host
+    async with websockets.connect(endpoint) as websocket:
         print("Connected to WebSocket server!")
 
         receive_task = asyncio.create_task(receive_messages(websocket))
